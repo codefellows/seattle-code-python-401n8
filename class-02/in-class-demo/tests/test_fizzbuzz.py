@@ -3,6 +3,7 @@ import pytest
 from fizzbuzz_package.fizzbuzz_module import fizzbuzz
 
 
+# @pytest.mark.skip()
 def test_fizzbuzz_exists():
     assert fizzbuzz
 
