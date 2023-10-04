@@ -26,16 +26,16 @@ class GameLogic:
         :return: Int, representing damage dealt.
         """
         dice_counter = Counter(dice_roll)
-        print(dice_counter)
-        score = 0
+        # print(dice_counter)
+        damage = 0
 
         for dice_value, count in dice_counter.items():
             if count == 2:
-                score += dice_value * 10
-        return score
+                damage += dice_value * 10
+        return damage
 
         # dice_counter = {}
-        # score = 0
+        # damage = 0
         #
         # for dice in dice_roll:
         #     if dice in dice_counter:
@@ -46,9 +46,9 @@ class GameLogic:
         # for dice_value, count in dice_counter.items():
         #     print(dice_value, count)
         #     if count == 2:
-        #         score +=
+        #         damage += dice_value * 10
         #
-        # return dice_counter
+        # return damage
 
 
 # # Allows for other roll_dice function/methods
