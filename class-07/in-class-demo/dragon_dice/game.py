@@ -1,26 +1,73 @@
 from dragon_dice.game_logic import GameLogic as GL
+from dragon_dice.user import User
+from dragon_dice.monster import Dragon
+
+
+def start_fight():
+    print("Welcome Adventurer!")
+    print("Today's quest is to fight the evil dragon Smaug!")
+    print("")
+    username = input("Enter your name: ")
+    return username
+
+
+def sword_fireball_heal_run(user):
+    while True:
+        print("sword, fireball, heal, or run?")
+        choice = input("> ")
+        if choice == "sword":
+            return user.sword_attack
+        if choice == "fireball":
+            return user.fireball_attack
+        if choice == "heal":
+            return user.heal
+        if choice == "run":
+            fight_over("run")
+
+
+def fight_over(outcome):
+    if outcome == "run":
+        print("You ran from the fight.")
+
+    if outcome == "win":
+        print("You won! congrats")
+
+    if outcome == "lost":
+        print("You have died.")
+
+    exit()
 
 
 # this is where the gameplay loop is
 def play():
-    dragon_health = 100
+    username = start_fight()
+    user = User(username)
+    smaug = Dragon("Smaug", 90, 80)
+    turn = 1
 
-    # add welcome message
-
+    # start of the turn
     while True:
-        if dragon_health <= 0:
-            print("The Dragon has been defeated! You win!")
-            break
+        print(f"***** Turn {turn} *****")
+        print(f"Enemy health is {smaug.hp}hp")
+        print(f"{user.username}'s health is {user.hp}hp")
 
-        num_dice = input("Enter number of dice:")
+        player_choice = sword_fireball_heal_run(user)  # a method: either sword_attack, fireball_attack, heal or run
+        num_dice = int(input("Enter number of dice: "))
+        damage_done = player_choice(GL.roll_dice(num_dice))  # uses the number of dice, and the dice roller method
 
-        dice_roll = GL.roll_dice(int(num_dice))
-        print(f"You rolled: {dice_roll}")
+        if damage_done:
+            smaug.receive_damage(damage_done)
 
-        damage_dealt = GL.calculate_damage(dice_roll)
-        print(f"You dealt {damage_dealt} damage!")
+        if smaug.hp <= 0:
+            fight_over("win")
 
-        dragon_health -= damage_dealt
+        enemy_damage_done = smaug.attack()
+        user.receive_damage(enemy_damage_done)
+
+        if user.hp <= 0:
+            fight_over("lost")
+
+        turn += 1
 
 
 if __name__ == "__main__":
