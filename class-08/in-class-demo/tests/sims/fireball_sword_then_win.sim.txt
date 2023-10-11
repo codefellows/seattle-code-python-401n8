@@ -1,0 +1,27 @@
+Welcome Adventurer!
+Today's quest is to fight the evil dragon Smaug!
+
+Enter your name
+> Adam
+
+***** Turn 1 *****
+Enemy health is 90hp
+Adam's health is 90hp
+sword, fireball, heal, or run?
+> fireball
+Enter number of dice
+> 6
+You rolled (1, 1, 2, 2, 3, 3)
+You dealt 60 with a fireball attack!
+You received 80 damage!
+
+***** Turn 2 *****
+Enemy health is 30hp
+Adam's health is 10hp
+sword, fireball, heal, or run?
+> sword
+Enter number of dice
+> 6
+You rolled (1, 2, 3, 4, 5, 6)
+You dealt 42 with a sword attack!
+You won! congrats
