@@ -4,6 +4,13 @@ from dragon_dice.game import play
 
 
 def extract_elements(lines, prefix, transform=lambda x: x):
+    """
+    A helper function to process lines in a text file.
+    :param lines:
+    :param prefix:
+    :param transform: An optional function
+    :return: A list of strings, representing the extracted elements.
+    """
     elements = []
     for line in lines:
         if line.startswith(prefix):
@@ -17,6 +24,7 @@ def get_inputs(lines):
 
 
 def get_mock_rolls(lines):
+    # TODO: Change the "You rolled " to "*** "
     return extract_elements(lines, "You rolled ", lambda x: tuple(int(num) for num in x if num.isnumeric()))
 
 
@@ -36,7 +44,11 @@ def compare_output_and_expected(captured_output, lines):
 def test_all(monkeypatch, capsys, test_input):
     with open(test_input, "r") as f:
         lines = f.readlines()
+
+        # follows a pattern to capture a list of inputs
         inputs = get_inputs(lines)
+
+        # follows a pattern to capture the mock rolls to be used in the mock roller
         mock_rolls = get_mock_rolls(lines)
 
     def mock_input(prompt):
@@ -48,9 +60,10 @@ def test_all(monkeypatch, capsys, test_input):
 
     test_instance = GameLogic(mock_rolls)
 
+    # TODO: Maybe change, depends on how your game exits
     # for games that use a `exit()` call
     with pytest.raises(SystemExit):
         play(test_instance.mock_roller)
 
-    captured_output = capsys.readouterr().out
+    captured_output = capsys.readouterr().out  # everything that's printed to the terminal
     compare_output_and_expected(captured_output, lines)
