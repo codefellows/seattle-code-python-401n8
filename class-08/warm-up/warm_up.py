@@ -24,7 +24,7 @@ Instructions:
 # print(add(5, 3))  # Outputs: 8
 
 # TODO 1: Create a lambda function that takes two numbers and returns their product.
-multiply = lambda x, y: x * y  # Complete this line.
+multiply = None  # Replace 'None' with your lambda function.
 
 # TODO 2: Create a lambda function that takes a string and returns its length.
 length = None  # Replace 'None' with your lambda function.
