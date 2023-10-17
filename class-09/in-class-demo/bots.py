@@ -154,10 +154,127 @@ class RandomAdam(BaseBot):
             return "r"
 
 
+class AwesomeAdam(BaseBot):
+
+    # How much ya gonna score if you roll
+    expected_scores = {
+        1: 25,
+        2: 50,
+        3: 86.9128,
+        4: 143.618,
+        5: 225.7611,
+        6: 408.486
+    }
+
+    # What are the chances you'll have x dice after you roll
+    expected_dice_remaining = {
+        1: {0: 0.666667, 6: 0.333333},
+        2: {0: 0.444168, 1: 0.444491, 6: 0.111341},
+        3: {0: 0.277464, 1: 0.222381, 2: 0.444624, 6: 0.055531},
+        4: {0: 0.157112, 1: 0.135785, 2: 0.296150, 3: 0.370474, 6: 0.040479},
+        5: {0: 0.076889, 1: 0.110279, 2: 0.211568, 3: 0.308638, 4: 0.262208, 6: 0.030418},
+        6: {0: 0.023137, 1: 0.094805, 2: 0.178191, 3: 0.246948, 4: 0.224745, 5: 0.154664, 6: 0.07751}
+    }
+
+    def _rolling_eu(self):
+        """
+        Looks 2 steps into the future
+        :return: Boolean, representing whether the bot should roll again (True) or bank (False)
+        """
+        eu = self.unbanked_points
+        current_dice_remaining = self.dice_remaining
+
+        for remaining, odds in self.expected_dice_remaining[current_dice_remaining].items():
+            # chance of zilch
+            if remaining == 0:
+                eu -= odds * self.unbanked_points
+
+            # add the expected utility of the next roll of dice
+            else:
+                second_roll_utility = self.expected_scores[remaining]
+                for r, o in self.expected_dice_remaining[remaining].items():
+                    # chance of zilch in second roll
+                    if r == 0:
+                        second_roll_utility -= o * second_roll_utility
+                    else:
+                        second_roll_utility += o * self.expected_scores[r]
+
+                eu += odds * max(second_roll_utility, self.expected_scores[remaining])
+
+        return eu > self.unbanked_points
+
+    def _roll_bank_or_quit(self):
+        if self._rolling_eu():
+            return "r"
+        else:
+            return "b"
+
+
+class Bank2650_Roll3_Bot(BaseBot):
+    def _roll_bank_or_quit(self):
+        """your logic here"""
+        if self.unbanked_points >= 2650:
+            return 'b'
+        elif self.dice_remaining <= 3:
+            return 'b'
+        else:
+            return 'r'
+
+
+    def _enter_dice(self):
+        """simulate user entering which dice to keep.
+        Defaults to all scoring dice"""
+
+        return super()._enter_dice()
+
+
+class Bank2000_Roll3_Bot(BaseBot):
+    def _roll_bank_or_quit(self):
+        if self.unbanked_points >= 2000:
+            return 'b'
+        if self.dice_remaining <= 3:
+            return 'b'
+        else:
+            return 'r'
+
+    def _enter_dice(self):
+
+        return super()._enter_dice()
+
+
+class Bank2000_Roll2_Bot(BaseBot):
+    def _roll_bank_or_quit(self):
+        if self.unbanked_points >= 2000:
+            return 'b'
+        if self.dice_remaining <= 2:
+            return 'b'
+        else:
+            return 'r'
+
+    def _enter_dice(self):
+
+        return super()._enter_dice()
+
+
+class Bank500_Bot(BaseBot):
+    def _roll_bank_or_quit(self):
+        if self.unbanked_points >= 500:
+            return 'b'
+        else:
+            return 'r'
+
+    def _enter_dice(self):
+
+        return super()._enter_dice()
+
+
 if __name__ == "__main__":
-    num_games = 100
-    # NervousNellie: 100 games played with average score of
+    num_games = 1000
     NervousNellie.play(num_games)
-    # MiddlingMargaret: 100 games played with average score of
     MiddlingMargaret.play(num_games)
     RandomAdam.play(num_games)
+    AwesomeAdam.play(num_games)
+    Bank2650_Roll3_Bot.play(num_games)
+    Bank2000_Roll3_Bot.play(num_games)
+    Bank2000_Roll2_Bot.play(num_games)
+    Bank500_Bot.play(num_games)
