@@ -14,8 +14,9 @@ def main():
         # Then you do stuff
         # expect(page.get_by_text("200: Foundations")).to_be_visible().click()  # TODO: do it right
         # page.get_by_label("200: Foundations").click()  # Also doesn't work
+        page.get_by_text("200: Foundations").nth(2).click()
 
-        page.click("//label[text() = '200: Foundations']")
+        # page.click("//label[text() = '200: Foundations']")
         page.click("//label[text() = 'Ops 201']")
 
         # Now that we have the HTML, bring in bs4
