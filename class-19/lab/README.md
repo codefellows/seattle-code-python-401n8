@@ -28,14 +28,8 @@ Your team is working on a project to improve the organization and automation of 
      - Renaming files based on a specific pattern.
      - Automatically backing up specific folders.
 
-### User Acceptance Tests
-
-???. Your Python scripts will be tested by an automated system. Make sure to follow the requirements and instructions closely. Your menu-driven application should be user-friendly and easy to navigate.
-
 ## Configuration
 
 - Create a project named `automation`.
 - Copy the folders and files from `lab/assets/user-docs`.
 - Create the necessary folders and files to demonstrate and test your automation tasks according to the Feature Tasks and Requirements.
-
-Refer to [Lab Submission Instructions](../../../reference/submission-instructions/labs/){:target="_blank"} for detailed instructions.
