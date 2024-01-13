@@ -1,0 +1,125 @@
+collect static
+	switch settings to postgres
+	show running in docker
+	no css!
+	https://whitenoise.readthedocs.io/en/stable/index.html
+		pip install whitenoise
+		pf
+		Add Whitenoise middleware to settings.py MIDDLEWARE
+		Add STATIC_ROOT to settings.py following the docs.
+		$ python manage.py collectstatic
+		rebuild container.
+		Run again and see the pretty browseable api again.
+		
+volumes
+	I'm tired of rebuilding my db over and over
+	docker volumes!
+	add to docker-compose.yml
+	rebuild
+	migrate, createsuperuser, create a thing
+	docker compose down
+	docker compose up
+	check that thing is still there in admin panel
+
+.env and elephantsql
+	docker compose down
+	pip install django-environ
+	pf
+	copy over `.env.sample` to Django project package
+	create a new `.env` in the project package
+	- set DEBUG=False
+	generate a new Django secret key
+		$ python -c "import secrets; print(secrets.token_urlsafe())"
+	create a new elephantsql database
+		create account/login to elephantsql.com
+		use free versions, no cc required (though it will push you)
+		"Create New Instance" button
+		name the instance, free plan, no tags
+		select closest region. if you run into issues choose a different location
+		click on blue link of name of instance for the Details
+	change `settings.py`
+	also add the SIMPLE_JWT and testing settings at the bottom
+	migrate in terminal (not container. it will take a few seconds bc cloud)
+	createsuperuser in terminal
+	test in terminal (need the optional SessionAuthentication auth classes)
+	runserver in terminal
+		admin panel
+		create thing
+	view thing in elephantsql's browser (choose the table from drop down)
+	demo running in Docker
+	don't need the db service or volumes! comment out to show
+
+django cors
+	You need django-cors-headers to make requests from other domains, ie deployment
+	https://pypi.org/project/django-cors-headers/
+	$ pip install django-cors-headers
+	pf
+	settings.py:
+		add 'corsheaders', to installed apps
+		add "corsheaders.middleware.CorsMiddleware",
+			to middleware, below security above whitenoise
+		set
+			CORS_ORIGIN_WHITELIST = tuple(env.list("ALLOWED_ORIGINS"))
+			CORS_ALLOW_ALL_ORIGINS = env.bool("ALLOW_ALL_ORIGINS")
+
+
+deploy to vercel
+	acp to new repo
+	vercel.json
+		change "src"
+		change "dest"
+	acp
+	new project in vercel.com
+	find repo
+	copy .env
+	click Deploy
+	fails with Django 5.0, which depends on Python 3.10 or higher, and vercel uses 3.9
+		Downgrade Django==4.2.9 in requirements.txt
+		acp
+	400 errors!
+		check the error in the runtime logs
+		Add in-class-demo-34.vercel.app to allowed hosts
+		redeploy
+	this is a serverless deployment. Not using gunicorn or development server
+		managed by Vercel's infrastructure
+	test in thunderclient
+		POST https://in-class-demo-34.vercel.app/api/token/
+		{"username": "admin",
+		"password": "1234"}
+
+deploy to ec2
+	comment out db and volume in docker-compose.yml
+	Django==5.0.1 in requirements
+	acp
+	new docker-compose.yml
+	new nginx.conf
+	login to AWS Management Console
+	search for EC2, click it
+	"Launch Instance" button
+	Select an appropriate AMI (Amazon Linux, Ubuntu, etc.).
+		default Amazon Linux
+		use Ubuntu, it's easier
+	Choose an instance type (e.g., t2.micro).
+		free tier t2.micro
+	Configure Key pair (login)
+		Create new key pair
+		name it
+		use default settings
+		download the .pem file
+	check "Allow HTTPS traffic from the internet"
+	check "Allow HTTP traffic from the internet"
+	click "Deploy"
+	click "Connect to instance"
+		SSH Client tab
+		copy command
+		go to .pem file directory
+		chmod 400 in_class_demo_34.pem
+		ssh -i "in_class_demo_34.pem" ubuntu@ec2-35-85-51-232.us-west-2.compute.amazonaws.com
+	$ sudo apt update
+	$ sudo apt upgrade
+	Install Docker: $ sudo apt install docker.io
+	https://docs.docker.com/compose/install/linux/#install-the-plugin-manually
+		or? sudo apt install docker-compose
+	git clone
+	add ip address to allowed hosts
+	sudo docker-compose up -d --build
