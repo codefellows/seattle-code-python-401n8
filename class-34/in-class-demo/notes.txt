@@ -119,8 +119,22 @@ deploy to ec2
 	$ sudo apt update
 	$ sudo apt upgrade
 	Install Docker: $ sudo apt install docker.io
-	https://docs.docker.com/compose/install/linux/#install-the-plugin-manually
-		or? sudo apt install docker-compose
-	git clone
-	add ip address to allowed hosts
+	Install docker-compose: $ sudo apt install docker-compose
+	git clone your repository (use https instead of ssh)
+	copy over the .env
+        cd to your Django project folder
+        touch .env
+        vim .env
+        `escape` key switches modes:
+            i - insert mode
+            : - command line mode
+        use insert mode to write/edit the file
+            ctrl + shift + v to paste
+        use command mode to exit:
+            :wq - save and exit
+            :q - exit without saving
+    add the public ipv4 address from AWS to allowed hosts in .env
+        use vim
 	sudo docker-compose up -d --build
+    should be up and running!
+    test in thunderclient
