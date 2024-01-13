@@ -25,3 +25,7 @@ To delete everything:
 ## Class 34
 - Whitenoise: https://whitenoise.readthedocs.io/en/stable/index.html
 - ElephantSQL: https://www.elephantsql.com/
+- .env: $ pip install django-environ
+- $ python -c "import secrets; print(secrets.token_urlsafe())"
+- cors headers: https://pypi.org/project/django-cors-headers/
+

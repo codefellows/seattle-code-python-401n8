@@ -10,23 +10,47 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
+from datetime import timedelta
 from pathlib import Path
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# new for .env
+env = environ.Env(
+    DEBUG=(bool, False),
+    ENVIRONMENT=(str, "PRODUCTION"),
+    SECRET_KEY=(str, "key goes here"),
+
+    ALLOW_ALL_ORIGINS=(bool, False),
+    ALLOWED_HOSTS=(list, []),
+    ALLOWED_ORIGINS=(list, []),
+
+    DATABASE_ENGINE=(str, "django.db.backends.sqlite3"),
+    DATABASE_NAME=(str, BASE_DIR / "db.sqlite3"),
+    DATABASE_USER=(str, ""),
+    DATABASE_PASSWORD=(str, ""),
+    DATABASE_HOST=(str, ""),
+    DATABASE_PORT=(int, 5432),
+)
+
+environ.Env.read_env()
+
+ENVIRONMENT = env.str("ENVIRONMENT")
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-k&+1cet2d8qdjt_$-e_=^qv3p%%d1wo&^-hp+sc3lvjpnjz%%-'
+SECRET_KEY = env.str("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG")
 
-ALLOWED_HOSTS = ['*']  # insecure but will work for all hosts, good for development
-
+ALLOWED_HOSTS = tuple(env.list("ALLOWED_HOSTS"))
 
 # Application definition
 
@@ -40,6 +64,7 @@ INSTALLED_APPS = [
 
     # Third party
     'rest_framework',
+    "corsheaders",
 
     # Local
     'things',
@@ -49,7 +74,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "corsheaders.middleware.CorsMiddleware",  # new for cors
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # new for whitenoise
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -102,12 +128,12 @@ WSGI_APPLICATION = 'things_api_project.wsgi.application'
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "nltpufzz",
-        "USER": "nltpufzz",
-        "PASSWORD": "0dBoLsNtxbWNo7ni3EQCvP2fBJIaX3Sl",
-        "HOST": "heffalump.db.elephantsql.com",
-        "PORT": 5432,
+        "ENGINE": env.str("DATABASE_ENGINE"),
+        "NAME": env.str("DATABASE_NAME"),
+        "USER": env.str("DATABASE_USER"),
+        "PASSWORD": env.str("DATABASE_PASSWORD"),
+        "HOST": env.str("DATABASE_HOST"),
+        "PORT": env.int("DATABASE_PORT"),
     }
 }
 
@@ -175,7 +201,7 @@ REST_FRAMEWORK = {
         # session. This method is typically used in traditional web applications where the user logs in and the
         # session is stored in the server-side session store. It uses Django's session framework and is therefore
         # dependent on Django's session middleware.
-        # 'rest_framework.authentication.SessionAuthentication',  # optional
+        'rest_framework.authentication.SessionAuthentication',  # optional
 
         # Also a built-in authentication class of Django REST framework. It provides a simple, HTTP basic
         # authentication method. Basic authentication uses standard fields in the HTTP header to include a username
@@ -184,3 +210,30 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.BasicAuthentication',  # optional
     ],
 }
+
+# set in .env
+CORS_ALLOWED_ORIGINS = tuple(env.list("ALLOWED_ORIGINS"))
+CORS_ALLOW_ALL_ORIGINS = env.bool("ALLOW_ALL_ORIGINS")
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        seconds=60 * 60
+    ),  # lasts for 60 minutes
+}
+
+
+# Tests will use sqlite:
+import sys  # move to the top
+
+
+# When you run python manage.py test, the sys.argv would include 'test'.
+if 'test' in sys.argv:
+    # reassign DATABASES setting if testing
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+

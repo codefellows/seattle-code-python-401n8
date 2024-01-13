@@ -10,7 +10,7 @@ collect static
 		$ python manage.py collectstatic
 		rebuild container.
 		Run again and see the pretty browseable api again.
-		
+
 volumes
 	I'm tired of rebuilding my db over and over
 	docker volumes!
@@ -65,9 +65,10 @@ django cors
 
 deploy to vercel
 	acp to new repo
-	vercel.json
+	add vercel.json to root of project
 		change "src"
 		change "dest"
+	change wsgi.py and add app variable
 	acp
 	new project in vercel.com
 	find repo
