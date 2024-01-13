@@ -4,6 +4,7 @@ from rest_framework import permissions
 # Can call this class anything
 class IsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
+        return False
         # If this method returns True, then the request is authorized
         # else 403 forbidden
         print("the request method is:", request.method)

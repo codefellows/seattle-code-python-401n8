@@ -161,12 +161,12 @@ REST_FRAMEWORK = {
         # session. This method is typically used in traditional web applications where the user logs in and the
         # session is stored in the server-side session store. It uses Django's session framework and is therefore
         # dependent on Django's session middleware.
-        'rest_framework.authentication.SessionAuthentication',  # optional
+        # 'rest_framework.authentication.SessionAuthentication',  # optional
 
         # Also a built-in authentication class of Django REST framework. It provides a simple, HTTP basic
         # authentication method. Basic authentication uses standard fields in the HTTP header to include a username
         # and password. This method is simple but not very secure on its own, as credentials are only encoded with
         # Base64 and not encrypted. It's generally recommended to use this in conjunction with HTTPS.
-        'rest_framework.authentication.BasicAuthentication',  # optional
+        # 'rest_framework.authentication.BasicAuthentication',  # optional
     ],
 }
