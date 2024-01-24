@@ -1,8 +1,14 @@
-# To create a Next.js app:
+# To create a Next.js app
 
 - `$ npx create-next-app@latest expert-eight-ball --javascript --eslint`
 - Select "yes" for tailwind, and "no" for everything else
 - `$ npm run dev` to run the development server
+
+## To test with Jest
+
+- `$ npm install jest @testing-library/react @testing-library/jest-dom babel-jest`
+- add a `jest.config.js` file to root of app
+- 
 
 ------
 
